@@ -1,75 +1,83 @@
 # conservation-spectral-python
 
-Python SDK for spectral graph theory conservation analysis — Laplacian construction, eigendecomposition, anomaly detection, and spectral fingerprinting.
+Python SDK for spectral graph conservation analysis — build tension graphs, compute Laplacian eigenvalues, track conservation ratios, detect anomalies, and verify spectral fingerprints.
 
 ## What This Gives You
 
-- **Tension graphs** — Weighted undirected graphs with vertex attributes for spectral analysis
-- **Laplacian matrices** — Unnormalized, normalized, and random-walk variants, built from graph topology
-- **Eigendecomposition** — Full eigenvalue/eigenvector computation via SciPy
-- **Conservation ratios** — Quantify how well each eigenvector preserves vertex attributes
-- **Anomaly detection** — Identify conservation violations, structural breaks, and spectral outliers with fix suggestions
-- **Spectral fingerprints** — BLAKE3-hashed eigenvalue signatures for comparing graph states
-- **Real-time tracking** — Sliding-window conservation monitor with configurable alerts
+- **Tension graphs** — weighted directed graphs with edge tension attributes
+- **Laplacian decomposition** — eigenvalue/eigenvector computation via QR iteration
+- **Conservation ratios** — CR = λ₂/λₙ with spectral gap and Cheeger constant
+- **Conservation tracking** — time-series tracker with alerts on anomalous drift
+- **Anomaly detection** — classify anomalies with severity and suggested corrections
+- **Spectral fingerprints** — hash-based graph identity for cross-system comparison
 
 ## Quick Start
 
 ```python
 from conservation_spectral import (
     TensionGraph, build_laplacian, eigendecompose,
-    conservation_ratios, spectral_gap, cheeger_constant,
-    analyze, detect_anomalies, spectral_fingerprint,
+    conservation_ratio, analyze, ConservationTracker, detect_anomalies
 )
 
-# Build a chord progression graph
-g = TensionGraph(directed=False)
-for chord in ["C", "G", "Am", "F", "Dm"]:
-    g.add_vertex(chord)
-g.add_edge("C", "G", 0.8)
-g.add_edge("G", "Am", 0.6)
-g.add_edge("Am", "F", 0.4)
-g.add_edge("F", "Dm", 0.3)
+# Build a tension graph
+g = TensionGraph()
+g.add_edge("A", "B", tension=0.8)
+g.add_edge("B", "C", tension=0.5)
+g.add_edge("C", "A", tension=0.3)
 
 # Spectral analysis
-lap = build_laplacian(g)
-eigen = eigendecompose(lap)
-report = analyze(eigen, g)
+L = build_laplacian(g)
+eigen = eigendecompose(L)
+cr = conservation_ratio(eigen.eigenvalues)
+print(f"Conservation ratio: {cr:.4f}")
 
-print(f"Spectral gap: {report.spectral_gap:.4f}")
-print(f"Cheeger constant: {report.cheeger_constant:.4f}")
+# Full analysis report
+report = analyze(g)
+print(report)
+# ConservationReport(spectral_gap=..., cheeger=..., anomalous=False, ...)
+
+# Track over time
+tracker = ConservationTracker(window=100)
+for observation in time_series:
+    alert = tracker.observe(observation)
+    if alert:
+        print(f"⚠ {alert}")
+
+# Anomaly detection
+anomalies = detect_anomalies(g)
+for a in anomalies:
+    print(f"{a.severity}: {a.description}")
+    print(f"  Fix: {a.suggestion}")
 ```
-
-See [`examples/music_analysis.py`](examples/music_analysis.py) for a full Bach chorale analysis demo.
 
 ## API Reference
 
-| Module | Key Functions |
-|--------|--------------|
-| `graph` | `TensionGraph`, `add_vertex`, `add_edge` |
-| `laplacian` | `build_laplacian`, `Laplacian` |
-| `eigen` | `eigendecompose`, `EigenDecomposition` |
-| `conservation` | `conservation_ratio`, `spectral_gap`, `cheeger_constant`, `analyze` |
-| `tracker` | `ConservationTracker`, `Alert` |
-| `fingerprint` | `spectral_fingerprint`, `spectral_fingerprint_hash`, `compare_fingerprints` |
-| `anomaly` | `detect_anomalies`, `Anomaly`, `AnomalyType`, `Fix` |
+| Module | Key Functions | Description |
+|---|---|---|
+| `graph` | `TensionGraph` | Weighted directed graph with tension |
+| `laplacian` | `build_laplacian` | Graph → Laplacian matrix |
+| `eigen` | `eigendecompose` | Eigenvalue/eigenvector computation |
+| `conservation` | `conservation_ratio`, `spectral_gap`, `cheeger_constant` | Core metrics |
+| `tracker` | `ConservationTracker`, `Alert` | Time-series monitoring |
+| `fingerprint` | `spectral_fingerprint`, `compare_fingerprints` | Graph identity |
+| `anomaly` | `detect_anomalies`, `Anomaly`, `Fix` | Anomaly detection and repair |
 
 ## How It Fits
 
-Part of the conservation spectral ecosystem — this is the **Python implementation**. Cross-language siblings:
+The **Python SDK** of the conservation spectral ecosystem:
 
-- **Rust**: [conservation-spectral](https://github.com/SuperInstance/conservation-spectral) — core engine
-- **TypeScript**: [conservation-spectral-js](https://github.com/SuperInstance/conservation-spectral-js) — JS/TS SDK
-- **Ada**: [conservation-spectral-ada](https://github.com/SuperInstance/conservation-spectral-ada) — DO-178C certified
-- **Conformance**: [conservation-conformance](https://github.com/SuperInstance/conservation-conformance) — cross-language test suite
+- [conservation-spectral-js](https://github.com/SuperInstance/conservation-spectral-js) — TypeScript SDK (same API)
+- [conservation-spectral-ada](https://github.com/SuperInstance/conservation-spectral-ada) — Ada port (DO-178C certified)
+- [conservation-protocol](https://github.com/SuperInstance/conservation-protocol) — Rust messaging protocol
+- [conservation-conformance](https://github.com/SuperInstance/conservation-conformance) — cross-language conformance tests
+- [constraint-theory-core](https://github.com/SuperInstance/constraint-theory-core) — uses conservation for constraint verification
 
 ## Testing
 
 ```bash
 pip install -e ".[dev]"
-pytest
+pytest -v  # 5 test files
 ```
-
-5 test modules covering graph construction, Laplacian building, eigendecomposition, conservation analysis, and real-time tracking.
 
 ## Installation
 
@@ -77,7 +85,7 @@ pytest
 pip install conservation-spectral
 ```
 
-Requires Python ≥ 3.10, NumPy ≥ 1.24, SciPy ≥ 1.10. Optional: `blake3` for fingerprint hashing.
+Requires Python ≥ 3.10.
 
 ## License
 
