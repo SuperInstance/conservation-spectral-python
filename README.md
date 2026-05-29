@@ -1,5 +1,9 @@
 # conservation-spectral-python
 
+[![PyPI version](https://img.shields.io/pypi/v/cocapn)](https://pypi.org/project/cocapn/) [![SuperInstance](https://img.shields.io/badge/SuperInstance-Ecosystem-blue)](https://github.com/SuperInstance)
+
+
+
 Python SDK for spectral graph conservation analysis — build tension graphs, compute Laplacian eigenvalues, track conservation ratios, detect anomalies, and verify spectral fingerprints.
 
 ## What This Gives You
@@ -90,3 +94,7 @@ Requires Python ≥ 3.10.
 ## License
 
 MIT
+
+## Documentation
+
+📚 [OpenConstruct Docs](https://github.com/SuperInstance/openconstruct-docs)
