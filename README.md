@@ -1,10 +1,12 @@
 # conservation-spectral-python
 
-[![PyPI version](https://img.shields.io/pypi/v/cocapn)](https://pypi.org/project/cocapn/) [![SuperInstance](https://img.shields.io/badge/SuperInstance-Ecosystem-blue)](https://github.com/SuperInstance)
+[![PyPI version](https://img.shields.io/pypi/v/conservation-spectral)](https://pypi.org/project/conservation-spectral/) [![SuperInstance](https://img.shields.io/badge/SuperInstance-Ecosystem-blue)](https://github.com/SuperInstance)
 
 
 
 Python SDK for spectral graph conservation analysis — build tension graphs, compute Laplacian eigenvalues, track conservation ratios, detect anomalies, and verify spectral fingerprints.
+
+> **Honesty markers used in this README:** ✅ verified against real code/artifacts today / ⚠️ real but conditional / 🔮 planned for a later phase.
 
 ## What This Gives You
 
@@ -89,7 +91,20 @@ pytest -v  # 5 test files
 pip install conservation-spectral
 ```
 
+✅ **Verified PyPI name:** The package is published on PyPI as [`conservation-spectral`](https://pypi.org/project/conservation-spectral/), version `0.1.0`. A direct audit (see below) confirmed that the wheel’s `conservation_spectral/*.py` files match the source files in this repo byte-for-byte.
+
+⚠️ **Not `cocapn`:** An earlier version of this README claimed the package was published as `cocapn`. That was incorrect. `cocapn==0.3.0` is a different project (Cocapn Fleet — an async multi-agent engine) and does not contain this code.
+
 Requires Python ≥ 3.10.
+
+## PyPI audit
+
+This repo’s claim of being published on PyPI was checked against the actual artifacts, using the same method the org uses elsewhere: download the wheel/sdist, compare file hashes, and check whether cited commits exist in this repo’s history.
+
+- ✅ `conservation-spectral==0.1.0` matches this repo. Downloaded from `https://pypi.org/pypi/conservation-spectral/json`, the wheel contains the same 9 source files under `conservation_spectral/` as this repo’s `src/conservation_spectral/`. SHA-256 hashes of `__init__.py`, `graph.py`, `laplacian.py`, `eigen.py`, `conservation.py`, `tracker.py`, `fingerprint.py`, `anomaly.py`, and `types.py` are identical to the current source.
+- ❌ `cocapn==0.3.0` does **not** match this repo. Downloaded from `https://pypi.org/pypi/cocapn/json`, the wheel/sdist is the Cocapn Fleet engine (`cocapn/engine.py`, `models.py`, `server.py`, `validation_loop.py`, etc.) and has no overlap with the conservation-spectral modules. The commit hashes cited in its `CHANGELOG.md` are not present in this repo’s git history.
+
+If you install `pip install cocapn`, you will get the fleet engine, not this SDK.
 
 ## License
 
